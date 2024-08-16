@@ -1,0 +1,24 @@
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const projectsContainer = document.getElementById('projects-container');
+
+        db.collection('projects').get().then((querySnapshot) => {
+            projectsContainer.innerHTML = '';
+            querySnapshot.forEach((doc) => {
+                const project = doc.data();
+                const projectElement = document.createElement('div');
+                projectElement.className = 'project-item';
+                projectElement.innerHTML = `
+                    <h3>${project.title}</h3>
+                    <p><strong>Autor:</strong> ${project.author}</p>
+                    <p><strong>Descripción:</strong> ${project.description}</p>
+                    <p><strong>Archivo:</strong> <a href="${project.fileUrl}" download="${project.fileName}">${project.fileName}</a></p>
+                `;
+                projectsContainer.appendChild(projectElement);
+            });
+        }).catch((error) => {
+            console.error("Error al recuperar los proyectos: ", error);
+        });
+    });
+</script>

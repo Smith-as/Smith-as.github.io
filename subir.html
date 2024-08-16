@@ -1,0 +1,43 @@
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const uploadButton = document.getElementById('upload-button');
+        const fileInput = document.getElementById('file-input');
+        const titleInput = document.getElementById('title-input');
+        const authorInput = document.getElementById('author-input');
+        const descriptionInput = document.getElementById('description-input');
+
+        uploadButton.addEventListener('click', function() {
+            const file = fileInput.files[0];
+            if (file) {
+                const storageRef = storage.ref('projects/' + file.name);
+                storageRef.put(file).then(() => {
+                    storageRef.getDownloadURL().then((url) => {
+                        const projectData = {
+                            title: titleInput.value,
+                            author: authorInput.value,
+                            description: descriptionInput.value,
+                            fileUrl: url,
+                            fileName: file.name
+                        };
+                        db.collection('projects').add(projectData).then(() => {
+                            alert('Proyecto subido exitosamente');
+                            clearInputs();
+                        }).catch((error) => {
+                            console.error("Error al subir el proyecto: ", error);
+                        });
+                    });
+                });
+            } else {
+                alert('Por favor selecciona un archivo.');
+            }
+        });
+
+        function clearInputs() {
+            titleInput.value = '';
+            authorInput.value = '';
+            descriptionInput.value = '';
+            fileInput.value = '';
+        }
+    });
+</script>
